@@ -2,13 +2,11 @@ import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { UsersModule } from "./users/users.module";
 import { ConfigModule } from "@nestjs/config";
-import { UsersController } from "./users/users.controller";
-import { UsersService } from "./users/users.service";
 import { User } from "./users/users.model";
 
 @Module({
-  controllers: [UsersController],
-  providers: [UsersService],
+  controllers: [],
+  providers: [],
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`,
