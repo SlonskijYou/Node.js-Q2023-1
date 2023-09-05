@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 
@@ -11,8 +11,8 @@ export class RolesController {
     return this.rolesService.create(roleDto);
   }
 
-  @Get()
-  getAllRoles() {
-    return this.rolesService.getAllRole();
+  @Get("/:value")
+  getAllRoles(@Param("value") value: string) {
+    return this.rolesService.getRoleByValue(value);
   }
 }
