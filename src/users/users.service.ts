@@ -22,4 +22,12 @@ export class UsersService {
     const users = await this.userRepository.findAll({ include: { all: true } });
     return users;
   }
+
+  async findUserByEmail(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email },
+      include: { all: true },
+    });
+    return user;
+  }
 }
