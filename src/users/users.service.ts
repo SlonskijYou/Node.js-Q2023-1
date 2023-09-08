@@ -15,6 +15,7 @@ export class UsersService {
     const user = await this.userRepository.create(dto);
     const role = await this.roleService.getRoleByValue("USER");
     await user.$set("roles", [role.id]);
+    user.roles = [role];
     return user;
   }
 
@@ -29,5 +30,12 @@ export class UsersService {
       include: { all: true },
     });
     return user;
+  }
+
+  async updateHashPassword(email: string, password: string) {
+    await this.userRepository.update(
+      { password: password },
+      { where: { email: email } }
+    );
   }
 }
