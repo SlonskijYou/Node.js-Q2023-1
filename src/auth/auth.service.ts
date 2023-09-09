@@ -21,10 +21,13 @@ export class AuthService {
     const userFindEmail = await this.usersService.findUserByEmail(
       userDto.email
     );
-    const backHashPasswod = await bcrypt.compare(
-      `${userDto.passsword}`,
-      userFindEmail.password
-    );
+    let backHashPasswod = false;
+    if (userFindEmail) {
+      if (await bcrypt.compare(userDto.password, userFindEmail.password)) {
+        backHashPasswod = true;
+      }
+    }
+
     if (userFindEmail && backHashPasswod) {
       return this.generateToken(userFindEmail);
     }
@@ -42,7 +45,7 @@ export class AuthService {
       );
     }
 
-    const hashPassword = await bcrypt.hash(`${userDto.passsword}`, 5);
+    const hashPassword = await bcrypt.hash(`${userDto.password}`, 5);
     const user = await this.usersService.createUser(userDto);
     await this.usersService.updateHashPassword(userDto.email, hashPassword);
     return this.generateToken(user);
