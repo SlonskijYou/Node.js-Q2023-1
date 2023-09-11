@@ -38,16 +38,25 @@ export class AuthService {
 
   async registration(userDto: CreateUserDto) {
     const findUser = await this.usersService.findUserByEmail(userDto.email);
-    if (findUser) {
+    const exp =
+      /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
+    if (!exp.test(userDto.email) || !userDto.password || !userDto.email) {
       throw new HttpException(
-        "Пользователь c таким enail существует",
+        "Некоректный email или password!",
         HttpStatus.BAD_REQUEST
       );
     }
-
-    const hashPassword = await bcrypt.hash(`${userDto.password}`, 5);
-    const user = await this.usersService.createUser(userDto);
-    await this.usersService.updateHashPassword(userDto.email, hashPassword);
+    if (findUser) {
+      throw new HttpException(
+        "Пользователь c таким email существует",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    const hashPassword = await bcrypt.hash(userDto.password, 5);
+    const user = await this.usersService.createUser({
+      email: userDto.email,
+      password: hashPassword,
+    });
     return this.generateToken(user);
   }
 
